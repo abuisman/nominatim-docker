@@ -60,8 +60,8 @@ RUN true \
         python3-argparse-manpage \
         # Misc.
         git \
-        curl \
         sudo \
+        aria2 \
         sshpass \
         openssh-client
 
@@ -79,7 +79,7 @@ ENV NOMINATIM_VERSION=4.3.1
 ARG USER_AGENT=mediagis/nominatim-docker:${NOMINATIM_VERSION}
 
 RUN true \
-    && curl -A $USER_AGENT https://nominatim.org/release/Nominatim-$NOMINATIM_VERSION.tar.bz2 -o nominatim.tar.bz2 \
+    && aria2 -U $USER_AGENT https://nominatim.org/release/Nominatim-$NOMINATIM_VERSION.tar.bz2 -o nominatim.tar.bz2 \
     && tar xf nominatim.tar.bz2 \
     && mkdir build \
     && cd build \

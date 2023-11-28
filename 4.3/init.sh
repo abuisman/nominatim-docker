@@ -2,14 +2,14 @@
 
 OSMFILE=${PROJECT_DIR}/data.osm.pbf
 
-CURL=("curl" "-L" "-A" "${USER_AGENT}" "--fail-with-body")
-
 SCP='sshpass -p DMg5bmLPY7npHL2Q scp -o StrictHostKeyChecking=no u355874-sub1@u355874-sub1.your-storagebox.de'
 
 # Check if THREADS is not set or is empty
 if [ -z "$THREADS" ]; then
   THREADS=$(nproc)
 fi
+
+ARIA=("aria2c" "-U" "${USER_AGENT}" "-x" "${THREADS}" "-s" "${THREADS}")
 
 if [ "$IMPORT_WIKIPEDIA" = "true" ]; then
   echo "Downloading Wikipedia importance dump"
@@ -49,8 +49,11 @@ else
 fi
 
 if [ "$PBF_URL" != "" ]; then
+  echo "Creating local directory structure"
+  mkdir -p $(dirname $OSMFILE)
+
   echo Downloading OSM extract from "$PBF_URL"
-  "${CURL[@]}" "$PBF_URL" -C - --create-dirs -o $OSMFILE
+  "${ARIA[@]}" "$PBF_URL" -o $OSMFILE
 fi
 
 if [ "$PBF_PATH" != "" ]; then
